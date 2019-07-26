@@ -1,6 +1,6 @@
 // import 'babel-polyfill';
 // need next 2 lines for aurelia-bootstrap-select
-import $ from 'jquery';
+// import $ from 'jquery';
 // import 'bootstrap';
 // import 'kendo/css/web/kendo.common.min.css';
 // import 'kendo/css/web/kendo.default.min.css';

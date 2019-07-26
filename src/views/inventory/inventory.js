@@ -9,28 +9,7 @@ import { DialogService } from 'aurelia-dialog';
 // import { Prompt } from '../../../services/prompt';
 import { Promptyn } from '../../services/promptyn';
 
-// import jsRapTable from 'jsRapTable';
-// import tablesorter from '../../jquery.tablesorter.min';// works 
 
-import tablesorter from '../../jquery.tablesorter.min';// works 
-import tablesorterw from '../../jquery.tablesorter.widgets';// works 
-
-
-
-// import jQuery from 'jquery'
-// import FancyGrid from '../../../fancy.full.min' // loaded but can get to view
-
-// import DataTable from '../../../datatables.min' // errors
-// import {DataTable} from '../../../datatables.net'; // eslint-disable-line
-// import * as dtSelect from '../../../datatables.net-select'; // eslint-disable-line
-
-//  import  Tabulator from '../../../tabulator'; // Uncaught (in promise) Error: Binding expression "example-table" cannot be assigned to.
-// import $ from 'jquery'
-// import Tabulator from '../../../tabulator'
-
-//  import DataTable from 'jquery.dataTables' 
-// import 'datatables';
-// import datatables from 'jquery.dataTables'
 @inject(ApiService, ApplicationService, DialogService)
 export class Inventory {
   //define some sample data
