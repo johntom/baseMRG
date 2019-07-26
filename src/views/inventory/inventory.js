@@ -213,7 +213,7 @@ export class Adjustermotes {
           // scroller
           scroller_fixedColumns: 1,
           // Set the height of the scroll window in pixels
-          scroller_height: 300,
+          scroller_height: 200,
           // scroll tbody to top after sorting
           scroller_upAfterSort: true,
           // pop table header into view while scrolling up the page
