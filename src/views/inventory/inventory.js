@@ -2,18 +2,18 @@
 
 import { inject } from 'aurelia-dependency-injection';
 // import $ from 'jquery';
-import { ApiService } from '../../../utils/servicesApi';
-import { ApplicationService } from '../../../services/application-service';
+import { ApiService } from '../../utils/servicesApi';
+import { ApplicationService } from '../../services/application-service';
 import moment from 'moment';
 import { DialogService } from 'aurelia-dialog';
 // import { Prompt } from '../../../services/prompt';
-import { Promptyn } from '../../../services/promptyn';
+import { Promptyn } from '../../services/promptyn';
 
 // import jsRapTable from 'jsRapTable';
 
 
-import tablesorter from '../../../jquery.tablesorter.min';// works 
-import tablesorterw from '../../../jquery.tablesorter.widgets';// works 
+import tablesorter from '../../jquery.tablesorter.min';// works 
+import tablesorterw from '../../jquery.tablesorter.widgets';// works 
 
 // import FancyGrid from '../../../fancy.full.min' // loaded but can get to view
 
