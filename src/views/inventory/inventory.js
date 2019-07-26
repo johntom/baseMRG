@@ -186,7 +186,7 @@ export class Inventory {
 
 
       $('#myTable').tablesorter({
-        theme: 'blue',
+        theme: 'default',
         //   headerTemplate : '{content} {icon}',
         widgets: ['filter', 'scroller'],
 
@@ -195,7 +195,7 @@ export class Inventory {
           // scroller
           scroller_fixedColumns: 1,
           // Set the height of the scroll window in pixels
-          scroller_height: 200,
+          scroller_height: 300,
           // scroll tbody to top after sorting
           scroller_upAfterSort: true,
           // pop table header into view while scrolling up the page
