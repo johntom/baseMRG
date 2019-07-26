@@ -13,7 +13,7 @@ import { Promptyn } from '../../services/promptyn';
 import tablesorter from 'jquery.tablesorter.min';// works 
 
 // import tablesorter from '../../jquery.tablesorter.min';// works 
-// import tablesorter from '../../src/jquery.tablesorter.min';// works 
+ import tablesorter from '../../jquery.tablesorter.min';// works 
 import tablesorterw from '../../jquery.tablesorter.widgets';// works 
 // import jQuery from 'jquery'
 // import FancyGrid from '../../../fancy.full.min' // loaded but can get to view
