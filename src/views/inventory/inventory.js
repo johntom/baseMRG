@@ -14,7 +14,7 @@ import { Promptyn } from '../../services/promptyn';
 
 import tablesorter from '../../jquery.tablesorter.min';// works 
 import tablesorterw from '../../jquery.tablesorter.widgets';// works 
-import jQuery from 'jquery'
+// import jQuery from 'jquery'
 // import FancyGrid from '../../../fancy.full.min' // loaded but can get to view
 
 // import DataTable from '../../../datatables.min' // errors
@@ -29,7 +29,7 @@ import jQuery from 'jquery'
 // import 'datatables';
 // import datatables from 'jquery.dataTables'
 @inject(ApiService, ApplicationService, DialogService)
-export class Adjustermotes {
+export class Inventory {
   //define some sample data
   //   tabledata = [
   //  	{id:1, name:"Oli Bob", age:"12", col:"red", dob:""},
