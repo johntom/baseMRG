@@ -186,7 +186,7 @@ export class Inventory {
 
 
       $('#myTable').tablesorter({
-
+        theme: 'blue',
         //   headerTemplate : '{content} {icon}',
         widgets: ['filter', 'scroller'],
 
