@@ -1,8 +1,20 @@
 <template>
 	<!-- <require from="./docs.css"></require> -->
-	<!-- <style>
-		
-	</style>  -->
+	<style>
+		.tablesorter-scroller-fixed-panel {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  border-right: 2px solid black;
+}
+
+table tbody td {
+  /* force "Notes" column to not wrap, so we get a horizontal scrolling demo! (optional css) */
+  white-space: nowrap;
+  /* Add min column width, or "Index" column filter gets too narrow to use (optional css) */
+  min-width: 60px;
+}
+
+	</style> 
  	<require from="../../resources/value-converters/date-format"></require>
 
 
@@ -139,8 +151,8 @@
 <!-- <div id="example" ref="example"></div> -->
 
 
- 
-<table id="myTable" class="tablesorter" >
+ <table id="myTable" class="tablesorter" >
+<!-- <table id="myTable" class="tablesorter" > -->
   <thead>
     <tr>
       <th>Last Name</th>
