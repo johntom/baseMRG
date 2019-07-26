@@ -185,7 +185,7 @@ export class Inventory {
 
 
 
-      $('#myTable').tablesorter({
+      $('table').tablesorter({
         theme: 'default',
         //   headerTemplate : '{content} {icon}',
         widgets: ['filter', 'scroller'],
@@ -193,122 +193,123 @@ export class Inventory {
         widgetOptions: {
           // This allows setting the number of fixed columns to add to the
           // scroller
-          // scroller_fixedColumns: 1,
+          scroller_fixedColumns: 1,
           // Set the height of the scroll window in pixels
-          scroller_height: 300,
+          scroller_height: 100,
           // scroll tbody to top after sorting
-          // scroller_upAfterSort: true,
+          scroller_upAfterSort: true,
           // pop table header into view while scrolling up the page
-          // scroller_jumpToHeader: true,
+          scroller_jumpToHeader: true,
           // Setting this to true will add a fixed overlay which can be used
           // for styling; A class name of "tablesorter-scroller-fixed-panel"
           // is added to the overlay.
-          // scroller_addFixedOverlay: false,
+          scroller_addFixedOverlay: false,
           // Set the width of the scroll bar in pixels; set to `null` to have
           // the width calculated internally as it is dependent on the browser
-          // scroll_barWidth: null,
+          scroll_barWidth: null,
           // Set this to a class name to use when hovering over a fixed column
           // row
-          // scroller_rowHighlight: "hover"
-        },
+          scroller_rowHighlight: "hover"
+        
+      },
 
 
 
 
-        // initialized: function(myTable) {
-        //   // Not an ideal solution to fix column alignment,
-        //   // but it works (for now)
-        //   $(myTable).resize();
-        // }
+        initialized: function (table) {
+          // Not an ideal solution to fix column alignment,
+          // but it works (for now)
+          $(table).resize();
+        }
       });
 
 
-    });
-    // })
-  }
+  });
+  // })
+}
 
 
 
 
-  activate(params, routeConfig) {
-    // if (params.id) {
-    //   this.recordId = params.id; 
-    //   this.heading = `DataForm for record ${this.recordId}`;
-    //   console.log('this.recordId ', this.recordId);
-    //   return this.api.findInventoryOne(this.recordId)
-    //     .then((jsonRes) => {
-    //       console.log('jsonRes ', jsonRes);          
-    //       let inv = jsonRes.data;
-    //       this.currentItem = inv[0];
-    //       console.log('data-form:activate - currentItem', this.currentItem);
-    //       this.inv = inv[0]
-    //       // console.log('this.inv loadData 0 ', inv[0].InventoryCode);
-    //       return inv
-    //     });
-    // }
-  }
-  remove(item, index) {
-    this.dialogService.open({ viewModel: Promptyn, model: 'Delete or Cancel?', lock: true }).whenClosed(response => {
+activate(params, routeConfig) {
+  // if (params.id) {
+  //   this.recordId = params.id; 
+  //   this.heading = `DataForm for record ${this.recordId}`;
+  //   console.log('this.recordId ', this.recordId);
+  //   return this.api.findInventoryOne(this.recordId)
+  //     .then((jsonRes) => {
+  //       console.log('jsonRes ', jsonRes);          
+  //       let inv = jsonRes.data;
+  //       this.currentItem = inv[0];
+  //       console.log('data-form:activate - currentItem', this.currentItem);
+  //       this.inv = inv[0]
+  //       // console.log('this.inv loadData 0 ', inv[0].InventoryCode);
+  //       return inv
+  //     });
+  // }
+}
+remove(item, index) {
+  this.dialogService.open({ viewModel: Promptyn, model: 'Delete or Cancel?', lock: true }).whenClosed(response => {
 
-      if (!response.wasCancelled) {
-        console.log('Delete')
-        let notes = this.currentItem.notes
-        notes.splice(index, 1)// start, deleteCount)
-      } else {
-        console.log('cancel');
-      }
-      console.log(response.output);
-    });
-  }
-
-
-  saveitem(item, index) {
-    item.edit = !item.edit
-
-  }
-
-  addNote() {
-
-    let notes = this.currentItem.notes
-    let flag = false
-    let item
-    let newNoteWorkDate = moment().format('YYYY-MM-DD')
-    if (notes === undefined) {
-      flag = true
-      notes = []
-    }
-    item = { WorkDate: newNoteWorkDate, Notes: '', edit: true }
-    notes.unshift(item)
-    if (flag) this.currentItem.notes = notes
-
-    this.newNoteWorkDate = '';
-    this.newNoteNote = '';
-
-  }
-
-
-
-  cancel(item, index) {
-    this.mode = 0
-    // alert('you are about to cancel ' + item.Notes + ' ' + index)
-    let notes = this.currentItem.notes//notes
-    // notes.push({WorkDate:'2017-10-30',Notes:'test'})
-    if (this.mode === 1) {
-
-      notes.splice(index, 1)
-      document.getElementById('a' + index).disabled = true;
-      document.getElementById('b' + index).disabled = true;
+    if (!response.wasCancelled) {
+      console.log('Delete')
+      let notes = this.currentItem.notes
+      notes.splice(index, 1)// start, deleteCount)
     } else {
-
-      this.currentItem.notes[index] = this.currentnote
-      console.log(' this.currentItem.notes', notes, this.currentItem.notes[index])
-
+      console.log('cancel');
     }
-    this.mode = 0
-    this.isDisableEdit = true
+    console.log(response.output);
+  });
+}
 
+
+saveitem(item, index) {
+  item.edit = !item.edit
+
+}
+
+addNote() {
+
+  let notes = this.currentItem.notes
+  let flag = false
+  let item
+  let newNoteWorkDate = moment().format('YYYY-MM-DD')
+  if (notes === undefined) {
+    flag = true
+    notes = []
+  }
+  item = { WorkDate: newNoteWorkDate, Notes: '', edit: true }
+  notes.unshift(item)
+  if (flag) this.currentItem.notes = notes
+
+  this.newNoteWorkDate = '';
+  this.newNoteNote = '';
+
+}
+
+
+
+cancel(item, index) {
+  this.mode = 0
+  // alert('you are about to cancel ' + item.Notes + ' ' + index)
+  let notes = this.currentItem.notes//notes
+  // notes.push({WorkDate:'2017-10-30',Notes:'test'})
+  if (this.mode === 1) {
+
+    notes.splice(index, 1)
+    document.getElementById('a' + index).disabled = true;
+    document.getElementById('b' + index).disabled = true;
+  } else {
+
+    this.currentItem.notes[index] = this.currentnote
+    console.log(' this.currentItem.notes', notes, this.currentItem.notes[index])
 
   }
+  this.mode = 0
+  this.isDisableEdit = true
+
+
+}
 
 
 
