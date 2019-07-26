@@ -14,29 +14,7 @@ export async function configure(aurelia) {
     .standardConfiguration()
     .developmentLogging()
     // .plugin('aurelia-kendoui-bridge')
-      .plugin('aurelia-kendoui-bridge', (kendo) => kendo.detect().notifyBindingBehavior())
-     // .plugin('aurelia-kendoui-bridge', (kendo) => kendo.pro())
-   
-    // .globalResources( "aurelia-kendoui-bridge/datepicker/datepicker" )
-    // .globalResources( "aurelia-kendoui-bridge/grid/grid" )
-    // .globalResources( "aurelia-kendoui-bridge/grid/col" )
-    // .globalResources( "aurelia-kendoui-bridge/common/template" )
-    // .globalResources( "aurelia-kendoui-bridge/common/template" )
-    // .globalResources( "aurelia-kendoui-bridge/multiselect/multiselect" )
-
-    // .globalResources( "aurelia-kendoui-bridge/editor/editor" );
-
-
-    //https://github.com/aurelia-ui-toolkits/aurelia-kendoui-bridge/tree/master/sample/src below
-   
-    // .plugin('aurelia-bootstrap-select')
-    
-    // pkg
-    //   "aurelia-slickgrid": "^2.6.0",
-// .plugin('aurelia-slickgrid', config => {
-//     // change any of the default global options
-//     config.options.gridMenu.iconCssClass = 'fa fa-bars';
-//   })
+      // .plugin('aurelia-kendoui-bridge', (kendo) => kendo.detect().notifyBindingBehavior())
 
 
     .plugin('aurelia-dialog', config => {
