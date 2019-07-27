@@ -17,8 +17,8 @@ export class App {
  
   // use activationStrategy for all wildcards 
   // { route: 'claim/:id', name: 'claim-search-results', moduleId: PLATFORM.moduleName('./views/claim/search-results'), title: 'Search Results' ,activationStrategy:'replace'  },
-
-
+  
+  
   configureRouter(config, router) {
     config.title = 'MRG Layout';
     config.addPipelineStep('authorize', AuthorizeStep);

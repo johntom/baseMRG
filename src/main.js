@@ -7,14 +7,14 @@
 // import "kendo/js/kendo.datepicker.js";
 // import "kendo/js/kendo.grid.js";
 // import "kendo/js/kendo.editor.js";
-// import "kendo/js/kendo.multiselect.js";
+// import "kendo/js/kendo.multiselect.js"; 
 
 export async function configure(aurelia) {
   aurelia.use
     .standardConfiguration()
     .developmentLogging()
     // .plugin('aurelia-kendoui-bridge')
-      // .plugin('aurelia-kendoui-bridge', (kendo) => kendo.detect().notifyBindingBehavior())
+    .plugin('aurelia-kendoui-bridge', (kendo) => kendo.detect().notifyBindingBehavior())
 
 
     .plugin('aurelia-dialog', config => {
