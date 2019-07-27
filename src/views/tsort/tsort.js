@@ -182,7 +182,9 @@ export class Tsort {
   // }
   attached() {
     $(document).ready(function () {
-      $('table').tablesorter({
+      // $('table').tablesorter({
+      $('myTable').tablesorter({
+        
         theme: 'default',
         //   headerTemplate : '{content} {icon}',
         widgets: ['filter', 'scroller'],
@@ -213,10 +215,10 @@ export class Tsort {
 
 
 
-        initialized: function (table) {
+        initialized: function (myTable) {
           // Not an ideal solution to fix column alignment,
           // but it works (for now)
-          $(table).resize();
+          $(myTable).resize();
         }
       });
 
