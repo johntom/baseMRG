@@ -65,9 +65,9 @@ export class SearchResults {
         id: "id", // Must assign id for update to work
         fields: {
           // LegacyID: { type: "number" }, // scan template
-          Artist: { type: "string" }, 
-            artist: { type: "string" }, // barcode insured
-       
+          Artist: { type: "string" },
+          artist: { type: "string" }, // barcode insured
+
           //  ArtistRegistra: { type: "string" },
           InventoryCode: { type: "string" },
           Title: { type: "string" },
@@ -83,7 +83,7 @@ export class SearchResults {
     },
     // pageSize: 10,
     height: 400,
-  
+
     //  serverPaging: true,
     //   serverSorting: true,
     sort: { field: 'InventoryCode', dir: 'asc' },
@@ -199,10 +199,48 @@ export class SearchResults {
     // this.grid('k-header-column-menu').eq(2).hide()
     // By Index  
     // grid.thead.find("[data-index=1]>.k-header-column-menu").remove();
-
     // this.grid.column["Bin"].IncludeInMenu(false);// hideColumn(2) NOT AVAIL
 
+    $(document).ready(function () {
+      $('table').tablesorter({
+        theme: 'default',
+        //   headerTemplate : '{content} {icon}',
+        widgets: ['filter', 'scroller'],
+
+        widgetOptions: {
+          // This allows setting the number of fixed columns to add to the
+          // scroller
+          scroller_fixedColumns: 1,
+          // Set the height of the scroll window in pixels
+          scroller_height: 400,
+          // scroll tbody to top after sorting
+          scroller_upAfterSort: true,
+          // pop table header into view while scrolling up the page
+          scroller_jumpToHeader: true,
+          // Setting this to true will add a fixed overlay which can be used
+          // for styling; A class name of "tablesorter-scroller-fixed-panel"
+          // is added to the overlay.
+          scroller_addFixedOverlay: false,
+          // Set the width of the scroll bar in pixels; set to `null` to have
+          // the width calculated internally as it is dependent on the browser
+          scroll_barWidth: null,
+          // Set this to a class name to use when hovering over a fixed column
+          // row
+          scroller_rowHighlight: "hover"
+        },
+
+        initialized: function (table) {
+          // Not an ideal solution to fix column alignment,
+          // but it works (for now)
+          $(table).resize();
+        }
+      });
+
+
+    });
+    // })
   }
+
   activate(params, routeConfig) {
     //http://74.114.164.24/api/v1/inventorycontent?artistl=s%26artistf=c 
     //let queryParams = this.utilService.parseQueryString();
@@ -229,7 +267,6 @@ export class SearchResults {
   }
 
   addinventory() {
-
     this.router.navigate(`#/inventory/data/create`);
   }
   loadGrid() {
@@ -255,7 +292,7 @@ export class SearchResults {
     // return inv
 
 
-    return this.api.findInventory(this.queryParams) 
+    return this.api.findInventory(this.queryParams)
       //return this.api.findInventoryKeywords(this.queryParams)
 
       .then((jsonRes) => {
@@ -433,13 +470,13 @@ export class SearchResults {
   // }
 
 
- async addexistingSelection() {
-if(this.appService.currentsavedlist===""){
-    this.dialogService.open({ viewModel: Promptmess, model: `please select a saved list  `, lock: true }).whenClosed(async response => { });
-}
+  async addexistingSelection() {
+    if (this.appService.currentsavedlist === "") {
+      this.dialogService.open({ viewModel: Promptmess, model: `please select a saved list  `, lock: true }).whenClosed(async response => { });
+    }
 
     let sels
-    let newcount=0
+    let newcount = 0
     if (this.selectedids === undefined) {
       sels = []
     } else sels = this.selectedids
@@ -447,12 +484,12 @@ if(this.appService.currentsavedlist===""){
     var grid = this.grid;
     var selectedRows = grid.select();
     if (selectedRows.length === 0) {
-     
-            this.dialogService.open({ viewModel: Promptmess, model: `please select a row to add  `, lock: true }).whenClosed(async response => { });
-         
+
+      this.dialogService.open({ viewModel: Promptmess, model: `please select a row to add  `, lock: true }).whenClosed(async response => { });
 
 
-      
+
+
     } else {
       var maxRows = selectedRows.length / 2;
       selectedRows.each(function (idx, el) {
@@ -470,18 +507,18 @@ if(this.appService.currentsavedlist===""){
         }
         if (i === maxRows - 1) {
           this.selectedids = sels;
-         await  this.api.updateSavedlists(this.appService.currentsavedlist, this.selectedids).then((jsonRes) => { 
-            console.log('jsonRes ', jsonRes); 
+          await this.api.updateSavedlists(this.appService.currentsavedlist, this.selectedids).then((jsonRes) => {
+            console.log('jsonRes ', jsonRes);
           });
         }
       }
 
     }
 
-     
-    let response = await this.api.findInventorySavedLists( this.appService.currentsavedlist);
+
+    let response = await this.api.findInventorySavedLists(this.appService.currentsavedlist);
     this.sllen = response.data.length
-    console.log('this.repos ', this.api.currentsavedlist) 
+    console.log('this.repos ', this.api.currentsavedlist)
     this.message = ` ${newcount} items added to list ${this.appService.currentsavedlist} count:${this.sllen}`
   }
   showSelection() {

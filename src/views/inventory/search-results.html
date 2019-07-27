@@ -1,5 +1,19 @@
 <template>
 	<style>
+		.tablesorter-scroller-fixed-panel {
+			margin-top: 10px;
+			margin-bottom: 15px;
+			border-right: 2px solid black;
+		}
+
+		table tbody td {
+			/* force "Notes" column to not wrap, so we get a horizontal scrolling demo! (optional css) */
+			white-space: nowrap;
+			/* Add min column width, or "Index" column filter gets too narrow to use (optional css) */
+			min-width: 60px;
+		}
+
+
 		.demo-section label {
 			display: block;
 			margin: 15px 0 5px 0;
@@ -59,6 +73,58 @@
 
 		</li> 	<ak-grid class="flex-row-1 overflow-y-auto" 
 	</ul> -->
+
+	<table>
+		<thead>
+			<tr>
+				<tr>
+					<th>InventoryCode
+					</th>
+					<th>Artist Name
+					</th>
+
+					<th>Title
+					</th>
+					<th>Inv Year
+					</th>
+					<th>Bin
+					</th>
+				</tr>
+		</thead>
+
+		<tbody>
+			<tr repeat.for="inv of inventory" with.bind="inv">
+				<td>
+					<span show.bind="!inv.edit">${InventoryCode}</span>
+					<input show.bind="inv.edit" class="form-control input-sm" disabled.bind="!inv.edit" type="text" value.bind="InventoryCode">
+				</td>
+				<td>
+					<span show.bind="!inv.edit">${artist.ArtistName}</span>
+					<input show.bind="inv.edit" class="form-control input-sm" disabled.bind="!inv.edit" type="text" value.bind="artist.ArtistName">					</td>
+				</td>
+				<td>
+					<span show.bind="!inv.edit">${Title}</span>
+					<input show.bind="inv.edit" class="form-control input-sm" disabled.bind="!inv.edit" type="text" value.bind="Title">
+				</td>
+				<td>
+					<span show.bind="!inv.edit">${InvYear}</span>
+					<input show.bind="inv.edit" class="form-control input-sm" disabled.bind="!inv.edit" type="text" value.bind="InvYear">
+				</td>
+				<td>
+					<span show.bind="!inv.edit">${Bin}</span>
+					<input show.bind="inv.edit" class="form-control input-sm" disabled.bind="!inv.edit" type="text" value.bind="Bin">
+				</td>
+
+				<td width="225px">
+					<button class="btn btn-primary" click.delegate="saveitem(note,$index)">${ !note.edit ? 'Edit' : 'Save' }</button>
+					<button class="btn btn-danger" click.delegate="remove(note,$index)">Delete</button>
+				</td>
+		</tbody>
+	</table>
+
+
+
+
 
 	<section class="full-height flex-column-1 au-animate ignore">
 		<ak-grid class="flex-row-1" id="grid" k-data-source.bind="datasource" k-widget.bind="grid" k-sortable.bind="{ mode: 'multiple',   allowUnsort: 'true'}"
