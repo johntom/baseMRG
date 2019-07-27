@@ -1,515 +1,360 @@
-
-
-import { inject } from 'aurelia-dependency-injection';
-// import $ from 'jquery';
-import { ApiService } from '../../utils/servicesApi';
+import { Router, Redirect } from 'aurelia-router';
+import { UtilService } from '../../services/util-service';
 import { ApplicationService } from '../../services/application-service';
-import moment from 'moment';
-import { DialogService } from 'aurelia-dialog';
-// import { Prompt } from '../../../services/prompt';
-import { Promptyn } from '../../services/promptyn';
+import { MyDataService } from "../../services/my-data-service";
+import { EventAggregator } from 'aurelia-event-aggregator';
+import { inject } from 'aurelia-dependency-injection';
 
+@inject(Router, UtilService, ApplicationService,MyDataService,EventAggregator)
 
-@inject(ApiService, ApplicationService, DialogService)
 export class Inventory {
-  //define some sample data
-  //   tabledata = [
-  //  	{id:1, name:"Oli Bob", age:"12", col:"red", dob:""},
-  //  	{id:2, name:"Mary May", age:"1", col:"blue", dob:"14/05/1982"},
-  //  	{id:3, name:"Christine Lobowski", age:"42", col:"green", dob:"22/05/1982"},
-  //  	{id:4, name:"Brendon Philips", age:"125", col:"orange", dob:"01/08/1980"},
-  //  	{id:5, name:"Margret Marmajuke", age:"16", col:"yellow", dob:"31/01/1999"},
-  //  ];
-  dataSet = [
-    ["Tiger Nixon", "System Architect", "Edinburgh", "5421", "2011/04/25", "$320,800"],
-    ["Garrett Winters", "Accountant", "Tokyo", "8422", "2011/07/25", "$170,750"],
-    ["Ashton Cox", "Junior Technical Author", "San Francisco", "1562", "2009/01/12", "$86,000"],
-    ["Cedric Kelly", "Senior Javascript Developer", "Edinburgh", "6224", "2012/03/29", "$433,060"],
-    ["Airi Satou", "Accountant", "Tokyo", "5407", "2008/11/28", "$162,700"],
-    ["Brielle Williamson", "Integration Specialist", "New York", "4804", "2012/12/02", "$372,000"],
-    ["Herrod Chandler", "Sales Assistant", "San Francisco", "9608", "2012/08/06", "$137,500"],
-    ["Rhona Davidson", "Integration Specialist", "Tokyo", "6200", "2010/10/14", "$327,900"],
-    ["Colleen Hurst", "Javascript Developer", "San Francisco", "2360", "2009/09/15", "$205,500"],
-    ["Sonya Frost", "Software Engineer", "Edinburgh", "1667", "2008/12/13", "$103,600"],
-    ["Jena Gaines", "Office Manager", "London", "3814", "2008/12/19", "$90,560"],
-    ["Quinn Flynn", "Support Lead", "Edinburgh", "9497", "2013/03/03", "$342,000"],
-    ["Charde Marshall", "Regional Director", "San Francisco", "6741", "2008/10/16", "$470,600"],
-    ["Haley Kennedy", "Senior Marketing Designer", "London", "3597", "2012/12/18", "$313,500"],
-    ["Tatyana Fitzpatrick", "Regional Director", "London", "1965", "2010/03/17", "$385,750"],
-    ["Michael Silva", "Marketing Designer", "London", "1581", "2012/11/27", "$198,500"],
-    ["Paul Byrd", "Chief Financial Officer (CFO)", "New York", "3059", "2010/06/09", "$725,000"],
-    ["Gloria Little", "Systems Administrator", "New York", "1721", "2009/04/10", "$237,500"],
-    ["Bradley Greer", "Software Engineer", "London", "2558", "2012/10/13", "$132,000"],
-    ["Dai Rios", "Personnel Lead", "Edinburgh", "2290", "2012/09/26", "$217,500"],
-    ["Jenette Caldwell", "Development Lead", "New York", "1937", "2011/09/03", "$345,000"],
-    ["Yuri Berry", "Chief Marketing Officer (CMO)", "New York", "6154", "2009/06/25", "$675,000"],
-    ["Caesar Vance", "Pre-Sales Support", "New York", "8330", "2011/12/12", "$106,450"],
-    ["Doris Wilder", "Sales Assistant", "Sidney", "3023", "2010/09/20", "$85,600"],
-    ["Angelica Ramos", "Chief Executive Officer (CEO)", "London", "5797", "2009/10/09", "$1,200,000"],
-    ["Gavin Joyce", "Developer", "Edinburgh", "8822", "2010/12/22", "$92,575"],
-    ["Jennifer Chang", "Regional Director", "Singapore", "9239", "2010/11/14", "$357,650"],
-    ["Brenden Wagner", "Software Engineer", "San Francisco", "1314", "2011/06/07", "$206,850"],
-    ["Fiona Green", "Chief Operating Officer (COO)", "San Francisco", "2947", "2010/03/11", "$850,000"],
-    ["Shou Itou", "Regional Marketing", "Tokyo", "8899", "2011/08/14", "$163,000"],
-    ["Michelle House", "Integration Specialist", "Sidney", "2769", "2011/06/02", "$95,400"],
-    ["Suki Burks", "Developer", "London", "6832", "2009/10/22", "$114,500"],
-    ["Prescott Bartlett", "Technical Author", "London", "3606", "2011/05/07", "$145,000"],
-    ["Gavin Cortez", "Team Leader", "San Francisco", "2860", "2008/10/26", "$235,500"],
-    ["Martena Mccray", "Post-Sales support", "Edinburgh", "8240", "2011/03/09", "$324,050"],
-    ["Unity Butler", "Marketing Designer", "San Francisco", "5384", "2009/12/09", "$85,675"]
+  // static inject = [Router, Router, ApplicationService, MyDataService, EventAggregator];
+
+  heading = 'Inventory Search'// PORTERC007 PORTERC009 PORTERC008 PORTERC013';
+  counter = 1;
+  search = {}
+  
+  selectedValue = null;
+  // options1 = [ { id: 1, name: 'one' }, { id: 2, name: 'two' } ];
+  // findOption = value => this.options1.find(x => x.name === value);
+  findOption = value => this.mru.find(x => x === value);
+  options = [];//multiselect select2
+  selected = [];//multiselect select2
+  states = [
+    { OrgName: 'Alabama', id: 'al' },
+    { OrgName: 'Alaska', id: 'ak' },
+    { OrgName: 'Arizona', id: 'az' },
+    { OrgName: 'Arkansas', id: 'ak' },
+    { OrgName: 'California', id: 'ca' },
+    { OrgName: 'Colorado', id: 'co' },
+    { OrgName: 'Connecticut', id: 'cn' }]
+  stateListxx = [
+    { name: 'Alabama', value: 'al' },
+    { name: 'Alaska', value: 'ak' },
+    { name: 'America Samoa', value: 'america samoa' },
+    { name: 'Arizona', value: 'arizona' },
+    { name: 'Arkansas', value: 'arkansas' },
+    { name: 'California', value: 'california' },
+    { name: 'Colorado', value: 'colorado' },
+    { name: 'Connecticut', value: 'connecticut' },
+    { name: 'New York', value: 'NY' }]
+  stateList = [
+    { oname: 'Alabama', id: 'al' },
+    { oname: 'Alaska', id: 'ak' },
+    { oname: 'America Samoa', id: 'america samoa' },
+    { oname: 'Arizona', id: 'arizona' },
+    { oname: 'Arkansas', id: 'arkansas' },
+    { oname: 'California', id: 'california' },
+    { oname: 'Colorado', id: 'colorado' },
+    { oname: 'Connecticut', id: 'connecticut' },
+    { oname: 'New York', id: 'NY' }]
+  monthsOfTheYear = [
+    { name: 'January', short: 'Jan', number: 1 },
+    { name: 'February', short: 'Feb', number: 2 },
+    { name: 'March', short: 'Mar', number: 3 },
+    { name: 'April', short: 'Apr', number: 4 },
+    { name: 'May', short: 'May', number: 5 },
+    { name: 'June', short: 'Jun', number: 6 },
+    { name: 'July', short: 'Jul', number: 7 },
+    { name: 'August', short: 'Aug', number: 8 },
+    { name: 'September', short: 'Sep', number: 9 },
+    { name: 'October', short: 'Oct', number: 10 },
+    { name: 'November', short: 'Nov', number: 11 },
+    { name: 'December', short: 'Dec', number: 12 }
   ];
-
-  tabledata = [
-    { name: 'Ted', surname: 'Smith', company: 'Electrical Systems', age: 30 },
-    { name: 'Ed', surname: 'Johnson', company: 'Energy and Oil', age: 35 },
-    { name: 'Sam', surname: 'Williams', company: 'Airbus', age: 38 },
-    { name: 'Alexander', surname: 'Brown', company: 'Renault', age: 24 },
-    { name: 'Nicholas', surname: 'Miller', company: 'Adobe', age: 33 },
-    { name: 'Andrew', surname: 'Thompson', company: 'Google', age: 28 },
-    { name: 'Ryan', surname: 'Walker', company: 'Siemens', age: 39 },
-    { name: 'John', surname: 'Scott', company: 'Cargo', age: 45 },
-    { name: 'James', surname: 'Phillips', company: 'Pro bugs', age: 30 },
-    { name: 'Brian', surname: 'Edwards', company: 'IT Consultant', age: 23 },
-    { name: 'Jack', surname: 'Richardson', company: 'Europe IT', age: 24 },
-    { name: 'Alex', surname: 'Howard', company: 'Cisco', age: 27 },
-    { name: 'Carlos', surname: 'Wood', company: 'HP', age: 36 },
-    { name: 'Adrian', surname: 'Russell', company: 'Micro Systems', age: 31 },
-    { name: 'Jeremy', surname: 'Hamilton', company: 'Big Machines', age: 30 },
-    { name: 'Ivan', surname: 'Woods', company: '', age: 24 },
-    { name: 'Peter', surname: 'West', company: 'Adobe', age: 26 },
-    { name: 'Scott', surname: 'Simpson', company: 'IBM', age: 29 },
-    { name: 'Lorenzo', surname: 'Tucker', company: 'Intel', age: 29 },
-    { name: 'Randy', surname: 'Grant', company: 'Bridges', age: 30 },
-    { name: 'Arthur', surname: 'Gardner', company: 'Google', age: 31 },
-    { name: 'Orlando', surname: 'Ruiz', company: 'Apple', age: 32 }
+  searchdates = [
+    { id: 0, name: 'DateAdded' },
+    { id: 1, name: 'DateModified' },
+    { id: 2, name: 'SoldDate' },
   ];
-
-  heading = 'DataForm HEADER...';
-  footer = 'DataForm FOOTER...';
-  recordId = '';
-  done = false;
-  edit = false;
-  // todos: Todo[] = [];
-  // notes: Note[] = [];
-  newNoteWorkDate = '';
-  newNote = '';
-
-  constructor(api, appService, dialogService) {
-    this.api = api;
-    this.appService = appService;
-    this.inv = '';
-    //  this.currentItem = this.appService.testrec;
-    this.currentItem = this.appService.currentItem
-    this.mode = 0;
-    this.editrec = '';
-    // this.inputable='disabled'
-    this.isDisableEdit = true
-    this.currentnote = '';
-    this.dialogService = dialogService
-    this.data = [
-      { name: 'Ted', surname: 'Smith', company: 'Electrical Systems', age: 30 },
-      { name: 'Ed', surname: 'Johnson', company: 'Energy and Oil', age: 35 },
-      { name: 'Sam', surname: 'Williams', company: 'Airbus', age: 38 },
-      { name: 'Alexander', surname: 'Brown', company: 'Renault', age: 24 },
-      { name: 'Nicholas', surname: 'Miller', company: 'Adobe', age: 33 },
-      { name: 'Andrew', surname: 'Thompson', company: 'Google', age: 28 },
-      { name: 'Ryan', surname: 'Walker', company: 'Siemens', age: 39 },
-      { name: 'John', surname: 'Scott', company: 'Cargo', age: 45 },
-      { name: 'James', surname: 'Phillips', company: 'Pro bugs', age: 30 },
-      { name: 'Brian', surname: 'Edwards', company: 'IT Consultant', age: 23 },
-      { name: 'Jack', surname: 'Richardson', company: 'Europe IT', age: 24 },
-      { name: 'Alex', surname: 'Howard', company: 'Cisco', age: 27 },
-      { name: 'Carlos', surname: 'Wood', company: 'HP', age: 36 },
-      { name: 'Adrian', surname: 'Russell', company: 'Micro Systems', age: 31 },
-      { name: 'Jeremy', surname: 'Hamilton', company: 'Big Machines', age: 30 },
-      { name: 'Ivan', surname: 'Woods', company: '', age: 24 },
-      { name: 'Peter', surname: 'West', company: 'Adobe', age: 26 },
-      { name: 'Scott', surname: 'Simpson', company: 'IBM', age: 29 },
-      { name: 'Lorenzo', surname: 'Tucker', company: 'Intel', age: 29 },
-      { name: 'Randy', surname: 'Grant', company: 'Bridges', age: 30 },
-      { name: 'Arthur', surname: 'Gardner', company: 'Google', age: 31 },
-      { name: 'Orlando', surname: 'Ruiz', company: 'Apple', age: 32 }
-    ];
-    this.tabledata = [
-      { id: 1, name: "Oli Bob", age: "12", col: "red", dob: "" },
-      { id: 2, name: "Mary May", age: "1", col: "blue", dob: "14/05/1982" },
-      { id: 3, name: "Christine Lobowski", age: "42", col: "green", dob: "22/05/1982" },
-      { id: 4, name: "Brendon Philips", age: "125", col: "orange", dob: "01/08/1980" },
-      { id: 5, name: "Margret Marmajuke", age: "16", col: "yellow", dob: "31/01/1999" },
-    ];
-    //  let table = new Tabulator('#example-table', {
-    //   // $('#example-table').Tabulator({
-    //     height: 205, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
-    //     data: tabledata, //assign data to table
-    //     layout: "fitColumns", //fit columns to width of table (optional)
-    //     columns: [ //Define Table Columns
-    //       { title: "Name", field: "name", width: 150 },
-    //       { title: "Age", field: "age", align: "left", formatter: "progress" },
-    //       { title: "Favourite Color", field: "col" },
-    //       { title: "Date Of Birth", field: "dob", sorter: "date", align: "center" },
-    //     ],
-    //     rowClick: function (e, row) { //trigger an alert message when the row is clicked
-    //       alert("Row " + row.getData().id + " Clicked!!!!");
-    //     },
-    //   });
-
-
-  }
-
-
-  test(index) {
-    console.log('test ' + index, (index === this.editrec && this.mode > 0))
-    return !(index === this.editrec && this.mode > 0)
-
-  }
-
-  RandomString() {
-    let s = '';
-    l = Math.floor(Math.random() * 10 + 3)
-    while (l--)
-      s += String.fromCharCode(Math.floor(Math.random() * 26) + 97);
-    return s;
-  }
-
-  // $('button.applyid').click(function() {
-  // This method adds the 'columns' widget & sorts the table to make it visible
-  //    applyid(){
-  //     $('table')
-  //       .trigger('applyWidgetId', 'columns')
-  //       .trigger('sorton', [ [[0,0]] ]);
-  //     return false;
-
-  // }
-  attached() {
-    $(document).ready(function () {
-
-
-
-      $('table').tablesorter({
-        theme: 'default',
-        //   headerTemplate : '{content} {icon}',
-        widgets: ['filter', 'scroller'],
-
-        widgetOptions: {
-          // This allows setting the number of fixed columns to add to the
-          // scroller
-          scroller_fixedColumns: 1,
-          // Set the height of the scroll window in pixels
-          scroller_height: 100,
-          // scroll tbody to top after sorting
-          scroller_upAfterSort: true,
-          // pop table header into view while scrolling up the page
-          scroller_jumpToHeader: true,
-          // Setting this to true will add a fixed overlay which can be used
-          // for styling; A class name of "tablesorter-scroller-fixed-panel"
-          // is added to the overlay.
-          scroller_addFixedOverlay: false,
-          // Set the width of the scroll bar in pixels; set to `null` to have
-          // the width calculated internally as it is dependent on the browser
-          scroll_barWidth: null,
-          // Set this to a class name to use when hovering over a fixed column
-          // row
-          scroller_rowHighlight: "hover"
-        
-      },
-
-
-
-
-        initialized: function (table) {
-          // Not an ideal solution to fix column alignment,
-          // but it works (for now)
-          $(table).resize();
-        }
-      });
-
-
-  });
-  // })
-}
-
-
-
-
-activate(params, routeConfig) {
-  // if (params.id) {
-  //   this.recordId = params.id; 
-  //   this.heading = `DataForm for record ${this.recordId}`;
-  //   console.log('this.recordId ', this.recordId);
-  //   return this.api.findInventoryOne(this.recordId)
-  //     .then((jsonRes) => {
-  //       console.log('jsonRes ', jsonRes);          
-  //       let inv = jsonRes.data;
-  //       this.currentItem = inv[0];
-  //       console.log('data-form:activate - currentItem', this.currentItem);
-  //       this.inv = inv[0]
-  //       // console.log('this.inv loadData 0 ', inv[0].InventoryCode);
-  //       return inv
-  //     });
-  // }
-}
-remove(item, index) {
-  this.dialogService.open({ viewModel: Promptyn, model: 'Delete or Cancel?', lock: true }).whenClosed(response => {
-
-    if (!response.wasCancelled) {
-      console.log('Delete')
-      let notes = this.currentItem.notes
-      notes.splice(index, 1)// start, deleteCount)
-    } else {
-      console.log('cancel');
-    }
-    console.log(response.output);
-  });
-}
-
-
-saveitem(item, index) {
-  item.edit = !item.edit
-
-}
-
-addNote() {
-
-  let notes = this.currentItem.notes
-  let flag = false
-  let item
-  let newNoteWorkDate = moment().format('YYYY-MM-DD')
-  if (notes === undefined) {
-    flag = true
-    notes = []
-  }
-  item = { WorkDate: newNoteWorkDate, Notes: '', edit: true }
-  notes.unshift(item)
-  if (flag) this.currentItem.notes = notes
-
-  this.newNoteWorkDate = '';
-  this.newNoteNote = '';
-
-}
-
-
-
-cancel(item, index) {
-  this.mode = 0
-  // alert('you are about to cancel ' + item.Notes + ' ' + index)
-  let notes = this.currentItem.notes//notes
-  // notes.push({WorkDate:'2017-10-30',Notes:'test'})
-  if (this.mode === 1) {
-
-    notes.splice(index, 1)
-    document.getElementById('a' + index).disabled = true;
-    document.getElementById('b' + index).disabled = true;
-  } else {
-
-    this.currentItem.notes[index] = this.currentnote
-    console.log(' this.currentItem.notes', notes, this.currentItem.notes[index])
-
-  }
-  this.mode = 0
-  this.isDisableEdit = true
-
-
-}
-
-
-
-
-
-}
-
-
-
-        // $("#myTable").tablesorter();
-                // $("#myTable").tablesorter({ sortList: [[0,0], [1,0]] });
-
-        //  $('.tablesorter').tablesorter({
-        //     // theme: 'jui',
-        //     showProcessing: true,
-        //     headerTemplate : '{content} {icon}',
-        //     widgets: [ 'uitheme', 'zebra', 'filter', 'scroller' ],
-        //     widgetOptions : {
-        //       scroller_height : 300,
-        //       // scroll tbody to top after sorting
-        //       scroller_upAfterSort: true,
-        //       // pop table header into view while scrolling up the page
-        //       scroller_jumpToHeader: true,
-        //       // In tablesorter v2.19.0 the scroll bar width is auto-detected
-        //       // add a value here to override the auto-detected setting
-        //       scroller_barWidth : null
-        //       // scroll_idPrefix was removed in v2.18.0
-        //       // scroller_idPrefix : 's_'
-        //     }
-        //   });
-
-        // var startFixedColumns = 2;
- // let table = new Tabulator(this.example-table, {
-  // let table = new Tabulator(this.example-table, {
-    //  let table = new Tabulator('#example-table', {
-
-  //    $('#example-table').Tabulator({
-  //     height: 205, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
-  //     data: this.tabledata, //assign data to table
-  //     layout: "fitColumns", //fit columns to width of table (optional)
-  //     columns: [ //Define Table Columns
-  //       { title: "Name", field: "name", width: 150 },
-  //       { title: "Age", field: "age", align: "left", formatter: "progress" },
-  //       { title: "Favourite Color", field: "col" },
-  //       { title: "Date Of Birth", field: "dob", sorter: "date", align: "center" },
-  //     ],
-  //     rowClick: function (e, row) { //trigger an alert message when the row is clicked
-  //       alert("Row " + row.getData().id + " Clicked!!!!");
-  //     },
-  //   });
-  //  });
-    // $(document).ready(function () {
-    //   $('#dtexample').DataTable({
-    //     data: this.dataSet,
-    //     columns: [
-    //       { title: "Name" },
-    //       { title: "Position" },
-    //       { title: "Office" },
-    //       { title: "Extn." },
-    //       { title: "Start date" },
-    //       { title: "Salary" }
-    //     ]
-    //   });
-    // })
-
-  //  let  data = [
-  //   { name: 'Ted', surname: 'Smith', company: 'Electrical Systems', age: 30 },
-  //   { name: 'Ed', surname: 'Johnson', company: 'Energy and Oil', age: 35 },
-  //   { name: 'Sam', surname: 'Williams', company: 'Airbus', age: 38 },
-  //   { name: 'Alexander', surname: 'Brown', company: 'Renault', age: 24 },
-  //   { name: 'Nicholas', surname: 'Miller', company: 'Adobe', age: 33 },
-  //   { name: 'Andrew', surname: 'Thompson', company: 'Google', age: 28 },
-  //   { name: 'Ryan', surname: 'Walker', company: 'Siemens', age: 39 },
-  //   { name: 'John', surname: 'Scott', company: 'Cargo', age: 45 },
-  //   { name: 'James', surname: 'Phillips', company: 'Pro bugs', age: 30 },
-  //   { name: 'Brian', surname: 'Edwards', company: 'IT Consultant', age: 23 },
-  //   { name: 'Jack', surname: 'Richardson', company: 'Europe IT', age: 24 },
-  //   { name: 'Alex', surname: 'Howard', company: 'Cisco', age: 27 },
-  //   { name: 'Carlos', surname: 'Wood', company: 'HP', age: 36 },
-  //   { name: 'Adrian', surname: 'Russell', company: 'Micro Systems', age: 31 },
-  //   { name: 'Jeremy', surname: 'Hamilton', company: 'Big Machines', age: 30 },
-  //   { name: 'Ivan', surname: 'Woods', company: '', age: 24 },
-  //   { name: 'Peter', surname: 'West', company: 'Adobe', age: 26 },
-  //   { name: 'Scott', surname: 'Simpson', company: 'IBM', age: 29 },
-  //   { name: 'Lorenzo', surname: 'Tucker', company: 'Intel', age: 29 },
-  //   { name: 'Randy', surname: 'Grant', company: 'Bridges', age: 30 },
-  //   { name: 'Arthur', surname: 'Gardner', company: 'Google', age: 31 },
-  //   { name: 'Orlando', surname: 'Ruiz', company: 'Apple', age: 32 }
+  // searchsold = [
+  //   { id: 0, name: 'Y' },
+  //   { id: 1, name: 'N' },
+  //   { id: 2, name: 'NFS' },
+  //   { id: 3, name: 'DON' },
   // ];
-  // document.addEventListener("DOMContentLoaded", function() {
+  searchsold = [
+    { id: 1, name: 'Y' },
+    { id: 2, name: 'N' },
+    { id: 3, name: 'NFS' },
+    { id: 4, name: 'DON' },
+  ];
+  altAKeyPressSubscription;
 
-  //   new FancyGrid({
-  //     renderTo: 'container',
-  //     width: 500,
-  //     height: 400,
-  //     data: data,
-  //     columns: [{
-  //       index: 'company',      
-  //       title: 'Company',
-  //       type: 'string',
-  //       width: 100
-  //     },{
-  //       index: 'name',
-  //       title: 'Name',
-  //       type: 'string',
-  //       width: 100
-  //     },{
-  //       index: 'surname',
-  //       title: 'Sur Name',
-  //       type: 'string',
-  //       width: 100
-  //     },{
-  //       index: 'age',
-  //       title: 'Age',
-  //       type: 'number',
-  //       width: 100
-  //     }]
-  //   });
-  // });
-  // });
+  constructor(router, utilService, appService, dataService, eventAggregator) {
+    this.router = router;
+    this.utilService = utilService;
+    this.appService = appService;
+    this.page = '#/inventory'
+    // this.search.inventorycode = 'PORTERC008'
+    this.dataService = dataService;
+    this.eventAggregator = eventAggregator
+  }
+  getStatesExample(filter, limit) {
+
+    let promise = this.httpClient.fetch('data/states.json')
+      .then(response => {
+        return response.json();
+      })
+      .then(states => filter.length > 0 ? states.filter(item => item.state.toLowerCase().indexOf(filter.toLowerCase()) > -1) : states)
+      .then(states => limit ? states.splice(0, limit) : states);
+    return promise;
+    // return Promise.delay(500, promise);
+  }
+
+  getStates(filter, limit) {
+    let filterlc = filter.toLowerCase()
+    let states
+    let Promise = this.dataService.loadStates()
+      .then(response => {
+        states = response
+        console.log('states', states)
+        return states //response // .json();
+      })
+      .then(states => filter.length > 0 ? states.filter(item => item.name.toLowerCase().indexOf(filter.toLowerCase()) > -1) : states)
+      .then(states => filter.length > 0 ? states.filter(item => item.name.toLowerCase().indexOf(filterlc) > -1) : states)
+
+    return Promise
+  }
+
+  // CodeType:3
+  // CodeTypeDesc:"Genre"
+  // Description:"Machines, Industry"
+  // ID:391
+  // id:"59d282beb777d41f42a5a310"
+  getKeywords(filter, limit) {
+    // NUT USED use direct in html
+    let filterlc = filter.toLowerCase()
+    let keywords
+    let Promise = this.dataService.loadKeywords()
+      .then(response => {
+        keywords = response
+        console.log('keywords', keywordfmrus)
+        return keywords
+      })
+      .then(keywords => filter.length > 0 ? keywords.filter(item => item.Description.toLowerCase().indexOf(filter.toLowerCase()) > -1) : keywords)
+      .then(keywords => filter.length > 0 ? keywords.filter(item => item.Description.toLowerCase().indexOf(filterlc) > -1) : keywords)
+
+    return Promise
+  }
+
+  populateInv(e) {
+    //10-17 this.search.inventorycode = e
+    this.appService.onlyonce = 0
+    //10-17  this.performSearch()
+    //https://johntom.github.io/fecMRG2/#/inventory/data/PORTERC008
+    //10-17   this.router.navigate(`#/inventory/data/${ this.search.inventorycode}`);
+    this.router.navigate(`#/inventory/data/${e}`);
+  }
+
+  performSearchSL() {
+    let savedlist = this.myDatalist.value //datalist
+    if (savedlist !== 'undefined' && savedlist !== 'null') this.search.savedlists = savedlist// `${this.name.name}`
+    let qs = this.utilService.generateQueryString(this.search);
+    console.log('this.search ', this.search)
+    let counter = this.utilService.counter++
+    let path = `Search${counter}${qs}`;
+    this.router.navigate(`#/inventory/${path}`);
+    this.appService.currentSearch = path
+  }
+  performSearch() {
+    let keyword = `${this.keywordDescription}`//.Description}` //aubs-typeahead 
+
+    //search.savedlists
+    //let savedlist = `${this.name}`
+
+    let medsupport = `${this.DescriptionMS}`
+    let currentlocation = `${this.DescriptionLoc}`
+    let multikeys = `${this.multikeywords}`
+    // console.log('selectedSoldId', this.search.selectedSoldId)
+    let sold = this.search.sold// `${this.search.sold}`
+
+    let owndedby = this.search.OwnedBy
+    console.log('sold', this.search.sold)
+    let selecteddate = this.search.selectedDateId//+''
+    console.log('selectedDateId', selecteddate) //sold', sold,sold)
+    //  this.search.sold=`${this.search.sold}`
+    //  // this.search.inventorycode='soldit'
+    // alert(keywd)
+    if (this.search) {
+      // if (keywd !== 'undefined' && keywd !== 'null') this.search.keywords = `${this.Description.Description}`
+      if (keyword !== 'undefined' && keyword !== 'null') this.search.keywords = `${this.keywordDescription.Description}`
+
+      //  if (savedlist !== 'undefined' && savedlist !== 'null') this.search.savedlists = `${this.name.name}`
+
+      if (medsupport !== 'undefined') this.search.mediumsupport = `${this.DescriptionMS.Description}`
+      if (currentlocation !== 'undefined') this.search.currentlocation = `${this.DescriptionLoc.Description}`
+      if (multikeys !== 'undefined') this.search.multikeywords = `${this.multikeywords}`
+      if (sold !== 'undefined') this.search.sold = sold
+      if (selecteddate !== 'undefined') this.search.selectedDateId = selecteddate
+      if (owndedby !== 'undefined') this.search.owndedby = owndedby //search.owndedby
+
+      let qs = this.utilService.generateQueryString(this.search);
+      console.log('this.search ', this.search)
+      let counter = this.utilService.counter++
+      // let path = `Search${counter}${qs}`;
+      // this.router.navigate(`#/inventory/${path}`);
 
 
-  //     $(this.example).dataTable({
-  //     data: dataSet,
-  //     columns: [
-  //         { title: "Name" },
-  //         { title: "Position" },
-  //         { title: "Office" },
-  //         { title: "Extn." },
-  //         { title: "Start date" },
-  //         { title: "Salary" }
-  //     ]
-  // } );
+      let path = `searchInv${qs}&tabname=searchInv${this.utilService.counter++}`;
+      let rt2 = `#/inventory/${path}`
+      this.router.navigate(rt2);
+
+      this.appService.currentSearch = path //`Search${counter}`
+    }
+  }
+
+
+  addinventory() {
+    // alert ('add')
+    this.router.navigate(`#/inventory/data/create`);
+  }
+
+  genreSelected(item) {
+    if (item) {
+      console.log('genre Selected: ' + item.Description);
+    } else {
+      console.log('Month cleared');
+    }
+  }
+
+  performClear() {
+    this.search = {}
+    //this.router.navigate(`#/inventory/`);
+  }
+  
+  // /////////////////////////////////////////
+  
+  attached() {
+    this.altAKeyPressSubscription = this.eventAggregator.subscribe('keydown:alt-a', this.addinventory.bind(this));
+    this.altSKeyPressSubscription = this.eventAggregator.subscribe('keydown:alt-s', this.performSearch.bind(this));
+
+ this.ndate= moment().format('YYYY-MM-DD')
+let provarray=[{id:1,sord:3,id:2,sord:1,id:3,sord:2}]
+ this.testlodash = _.sortBy(provarray, 'sord');
+    
+  }
+  detached() {
+    this.altAKeyPressSubscription.dispose();
+    this.altSKeyPressSubscription.dispose();
+  }
+
+  activate() {
+    console.log('name-tag activate before attached ');
+    this.mru = []
+    let mruinfo, tabindex
+    mruinfo = localStorage.getItem('mru-mrg');
+    if (mruinfo === null) {
+       this.mruinfo = 0
+    } else {
+      this.mruinfo = JSON.parse(mruinfo)
+
+      if (this.mruinfo.mru1 !== undefined) {
+        this.mru.push(this.mruinfo.mru1.InvCode)
+      } 
+     
+      if (this.mruinfo.mru2 !== undefined) {
+        this.mru.push(this.mruinfo.mru2.InvCode)
+      } 
+    
+      if (this.mruinfo.mru3 !== undefined) {
+        this.mru.push(this.mruinfo.mru3.InvCode)
+      } 
+    
+      if (this.mruinfo.mru4 !== undefined) {
+        this.mru.push(this.mruinfo.mru4.InvCode)
+      } 
+    
+      if (this.mruinfo.mru5 !== undefined) {
+        this.mru.push(this.mruinfo.mru5.InvCode)
+      } 
+     
+    if (this.mruinfo.mru6 !== undefined) {
+        this.mru.push(this.mruinfo.mru6.InvCode)
+      } 
+     
+      if (this.mruinfo.mru7 !== undefined) {
+        this.mru.push(this.mruinfo.mru7.InvCode)
+      } 
+    
+      if (this.mruinfo.mru8 !== undefined) {
+        this.mru.push(this.mruinfo.mru8.InvCode)
+      } 
+    
+      if (this.mruinfo.mru9 !== undefined) {
+        this.mru.push(this.mruinfo.mru9.InvCode)
+      } 
+    
+      if (this.mruinfo.mru10 !== undefined) {
+        this.mru.push(this.mruinfo.mru10.InvCode)
+      } 
+
+
+    }
+    // for select2
+    this.selectOptions = [
+      { label: 'My Option', value: 'my-value' },
+      { label: 'Some Value', value: '1212' },
+      { label: 'Select Me!', value: 'fsdf32423_312' },
+    ];
+
+    this.defaultSelected = this.selectOptions[0];
+    // for select2 ms
+    this.options = [
+      { label: 'First Option', value: "1" },
+      { label: 'Second Option', value: "2" },
+      { label: 'Third Option', value: "3" }
+    ];
+
+    this.selected = ["3", "1"];
+    this.optionsMatt = ['First Option', 'Second Option', 'Third Option'];
+  }
+  changeCallback(evt) {
+    // The selected value will be printed out to the browser console
+
+    let val = evt.detail.value
+    console.log(val);
+  }
+  changeCallbackM(evt) {
+    // The selected value will be printed out to the browser console
+
+
+    console.log(this.selected);
+  }
+  changeCallbackMru(selectedvalue) {
+    // The selected value will be printed out to the browser console
+    // if mru
+    console.log('selectedvalue ', selectedvalue, "myDatalist", this.myDatalist.value);
+    // if (selectedvalue === undefined) {
+    //   this.mru.push(this.myDatalist.value)
+    //   this.populateInv(this.myDatalist.value)
+    // } else this.populateInv(selectedvalue)
+
+    if (selectedvalue === undefined) {
+
+    } else this.performSearchSL()
 
 
 
+  }
+  checkms() {
+    console.log(this.selectedOptions)
 
-  //   //   $(document).ready( function () {
+  }
 
+}
 
-  // $(document).ready(function () {
-  //   // let table = new Tabulator("#example-table", {
-
-
-
-  //      })
-  //   $('#dtVerticalScrollExample').DataTable({
-  //     "scrollY": "200px",
-  //     "scrollCollapse": true,
-  //     "ordering": false,
-  //   });
-  //   // $('.dataTables_length').addClass('bs-select');
-  // });
-
-  // $(document).ready(function () {
-
-  //   for (let n = 1; n < 40; n++)
-  //     // $('<tr onclick="alert(\'id ' + n + '\')">').html('<td>' + Math.floor(Math.random() * 100 + 1) + '</td><td>' + this.RandomStringRandomString() + '</td><td>' + this.RandomString() + '</td><td>' + this.RandomString() + '</td>').appendTo($('tbody'));
-
-  //   $('#demo1').jsRapTable({
-  //     onSort: function (i, d) {
-  //       $('tbody').find('td').filter(function () {
-  //         return $(this).index() === i;
-  //       }).sortElements(function (a, b) {
-  //         if (i)
-  //           return $.text([a]).localeCompare($.text([b])) * (d ? -1 : 1);
-  //         else
-  //           return (parseInt($.text([a])) - parseInt($.text([b]))) * (d ? -1 : 1);
-  //       }, function () {
-  //         return this.parentNode;
-  //       });
-  //     },
-  //   });
-
-
-  // });
- // add() {
-  //   this.mode = 0//1// 'add';
-  //   this.editrec = 0;
-  //   let notes = this.currentItem.notes
-  //   // notes.push({WorkDate:'2017-10-30',Notes:'test'})
-  //   // var today = new Date()
-  //   var item = { WorkDate: '', Notes: '' }
-  //   notes.unshift(item)
-  //   // var table = document.getElementById("myTable");
-  //   // table.refresh();
-  //   // //  window.location.reload()
-  //   // document.getElementById('a' + 0).disabled = false;
-  //   // document.getElementById('b' + 0).disabled = false;
-  //   // this.edit(item,0) 
-
+// attached() {
+  //   this.altAKeyPressSubscription = this.eventAggregator.subscribe('keydown:alt-a', this.addinventory.bind(this));
+  //   // this.stateList
+  // set typahead value for state
+  // console.log('sl', this.stateList)
+  // // this.name = {
+  // //   name: 'New York',
+  // //   value: 'NY'
+  // // }
+  // this.oname = {
+  //   oname: 'Alabama', id: 'al'
   // }
+  // this.dow.value = this.oname
 
-
-  // edit2(item, index){
-  //    this.mode = 2// 'add';
-  //     this.editrec= index;
-  //     let notes = this.currentItem.notes
-  //     this.isDisableEdit=false
-  //  // console.log((index === this.editrec &&  this.mode >0  ))
-  //   return !(index === this.editrec &&  this.mode >0  )
-
-  // }

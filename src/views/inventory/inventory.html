@@ -1,593 +1,209 @@
 <template>
-	<!-- <require from="./docs.css"></require> -->
-	<style>
-		.tablesorter-scroller-fixed-panel {
-  margin-top: 10px;
-  margin-bottom: 15px;
-  border-right: 2px solid black;
-}
 
-table tbody td {
-  /* force "Notes" column to not wrap, so we get a horizontal scrolling demo! (optional css) */
-  white-space: nowrap;
-  /* Add min column width, or "Index" column filter gets too narrow to use (optional css) */
-  min-width: 60px;
-}
+  <!-- <require from="aurelia-kendoui-bridge/multiselect/multiselect"></require> -->
 
-	</style> 
- 	<require from="../../resources/value-converters/date-format"></require>
+	<section class="full-height flex-column-1 au-animate ignore">
+		<div class="flex-row-none section-header">
+			${heading} ${ndate}
+		</div>
 
+			<div class="flex-column-1 search-panel">
+        	<div class="form-group flex-column-1 ">
 
-	<section style="width:400px;height:300px">
-  	<h4>
-			<i class="fa fa-folder-open"></i> Notes (${currentItem.notes.length})
-			<a slot="buttons-slot" class="btn btn-success" click.delegate="addNote()">
-				<i class="fa fa-plus"></i> Add Note
-			</a>
-		</h4>
-    <!-- <div id="dtexample" ref="dtexample"></div> -->
-    <!-- <div id="example-table" ref="example-table"></div> -->
-		<!-- <div class="tableFixHead">
-      <table>
-        <thead>
-          <tr>
-              <th>Last name</th>
-              <th>Points</th>
-              <th>Content</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-              <td>Smith</td>
-              <td>50</td>
-              <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-            </tr>
-            <tr>
-           
-              <td>Jackson</td>
-              <td>94</td>
-              <td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-            </tr>
-            
-             <tr>
-              <td>Smith</td>
-              <td>50</td>
-              <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-            </tr>
-            <tr>
-             
-              <td>Jackson</td>
-              <td>94</td>
-              <td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-            </tr>
-            <tr>
-            
-              <td>Smith</td>
-              <td>50</td>
-              <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-            </tr>
-            <tr>
-           
-              <td>Jackson</td>
-              <td>94</td>
-              <td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-            </tr>
-             <tr>
-              <td>Smith</td>
-              <td>50</td>
-              <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-            </tr>
-            <tr>
-           
-              <td>Jackson</td>
-              <td>94</td>
-              <td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-            </tr>
-            
-             <tr>
-              <td>Smith</td>
-              <td>50</td>
-              <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-            </tr>
-            <tr>
-             
-              <td>Jackson</td>
-              <td>94</td>
-              <td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-            </tr>
-            <tr>
-            
-              <td>Smith</td>
-              <td>50</td>
-              <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-            </tr>
-            <tr>
-           
-              <td>Jackson</td>
-              <td>94</td>
-              <td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-            </tr>
+				<form class="flex-column-1" submit.delegate="performSearch()">
+					<div class="flex-row-none">
+						<div class="form-group flex-column-1 ">
 
-  <tr>
-              <td>Smith</td>
-              <td>50</td>
-              <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-            </tr>
-            <tr>
-           
-              <td>Jackson</td>
-              <td>94</td>
-              <td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-            </tr>
-            
-             <tr>
-              <td>Smith</td>
-              <td>50</td>
-              <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-            </tr>
-            <tr>
-             
-              <td>Jackson</td>
-              <td>94</td>
-              <td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-            </tr>
-            <tr>
-            
-              <td>Smith</td>
-              <td>50</td>
-              <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-            </tr>
-            <tr>
-           
-              <td>Jackson</td>
-              <td>94</td>
-              <td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-            </tr>
+							<div class="flex-row-none">
+
+								<div class="form-group flex-column-1">
+									<input id="searchInvCode" type="text" class="form-control" placeholder="Search for inv code...PORTERC008" value.bind="search.inventorycode">
+								</div>
+
+								<div class="form-group flex-column-1 margin-left-10">
+									<input id="AltID" type="text" class="form-control" placeholder="Search for AltID ..." value.bind="search.altid">
+								</div>
+
+							</div>
+							<div class="flex-row-none">
+								<div class="form-group flex-column-1">
+                  <!-- artist.lastName -->
+									<input id="searchartistl" type="text" class="form-control" placeholder="Search for inv artist last..." value.bind="search.artistl">
+								</div>
+								<div class="form-group flex-column-1 margin-left-10">
+									<input id="searchartistf" type="text" class="form-control" placeholder="Search for inv artist first..." value.bind="search.artistf">
+								</div>
+
+                	<!-- <div class="form-group flex-column-1">
+									<input id="artist" type="text" class="form-control" placeholder="Search for inv artist last..." value.bind="search.artist.lastName">
+								</div> -->
+							</div>
+							<div class="flex-row-none">
+
+								<div class="form-group flex-column-1">
+									<input id="searchInputNo" type="text" class="form-control" placeholder="Search for title..." value.bind="search.title">
+								</div>
 
 
-        </tbody>
-      </table>
-    </div> -->
-<!-- <div id="example" ref="example"></div> -->
+								<div class="form-group flex-column-1 margin-left-10">
+									<input id="searchInvYear" type="text" class="form-control" placeholder="Search for InvYear ..." value.bind="search.invyear">
+								</div>
+							</div>
+							<div class="flex-row-none">
+								<div class="form-group flex-column-1">
+									<input id="searchMediumSupport" type="text" class="form-control" placeholder="Search for MediumSupport ..." value.bind="search.mediumsupport">
+
+								</div>
+								<div class="form-group flex-column-1">
 
 
- <table  >
-    <!-- id="table" class="tablesorter" > -->
-<!-- <table id="myTable" class="tablesorter" > -->
-  <thead>
-    <tr>
-      <th>Last Name</th>
-      <th>First Name</th>
-      <th>Email</th>
-      <th>Due</th>
-      <th>Web Site</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Smith</td>
-      <td>John</td>
-      <td>jsmith@gmail.com</td>
-      <td>$50.00</td>
-      <td>http://www.jsmith.com</td>
-    </tr>
-    <tr>
-      <td>Bach</td>
-      <td>Frank</td>
-      <td>fbach@yahoo.com</td>
-      <td>$50.00</td>
-      <td>http://www.frank.com</td>
-    </tr>
-    <tr>
-      <td>Doe</td>
-      <td>Jason</td>
-      <td>jdoe@hotmail.com</td>
-      <td>$100.00</td>
-      <td>http://www.jdoe.com</td>
-    </tr>
-    <tr>
-      <td>Conway</td>
-      <td>Tim</td>
-      <td>tconway@earthlink.net</td>
-      <td>$50.00</td>
-      <td>http://www.timconway.com</td>
-    </tr>
-      <tr>
-      <td>Smith</td>
-      <td>John</td>
-      <td>jsmith@gmail.com</td>
-      <td>$50.00</td>
-      <td>http://www.jsmith.com</td>
-    </tr>
-    <tr>
-      <td>Bach</td>
-      <td>Frank</td>
-      <td>fbach@yahoo.com</td>
-      <td>$50.00</td>
-      <td>http://www.frank.com</td>
-    </tr>
-    <tr>
-      <td>Doe</td>
-      <td>Jason</td>
-      <td>jdoe@hotmail.com</td>
-      <td>$100.00</td>
-      <td>http://www.jdoe.com</td>
-    </tr>
-    <tr>
-      <td>Conway</td>
-      <td>Tim</td>
-      <td>tconway@earthlink.net</td>
-      <td>$50.00</td>
-      <td>http://www.timconway.com</td>
-    </tr>
-   
-      <tr>
-      <td>Smith</td>
-      <td>Beth</td>
-      <td>jsmith@gmail.com</td>
-      <td>$50.00</td>
-      <td>http://www.jsmith.com</td>
-    </tr>
-    <tr>
-      <td>Bach</td>
-      <td>Fran</td>
-      <td>fbach@yahoo.com</td>
-      <td>$50.00</td>
-      <td>http://www.frank.com</td>
-    </tr>
-    <tr>
-      <td>Doe</td>
-      <td>Jen</td>
-      <td>jdoe@hotmail.com</td>
-      <td>$100.00</td>
-      <td>http://www.jdoe.com</td>
-    </tr>
-    <tr>
-      <td>Conway</td>
-      <td>Toth</td>
-      <td>tconway@earthlink.net</td>
-      <td>$50.00</td>
-      <td>http://www.timconway.com</td>
-    </tr>
+									<select id="OwnedBy " class="form-control " value.bind="search.OwnedBy" placeholder="search OwnedBy">
+											<option model.bind="null">Choose.OwnedBy</option>
+											<option repeat.for="opt of appService.codesOwnership " model.bind="opt.id">
+												${opt.Description}
+											</option>
+										</select>
 
- <tr>
-      <td>Smith</td>
-      <td>John</td>
-      <td>jsmith@gmail.com</td>
-      <td>$50.00</td>
-      <td>http://www.jsmith.com</td>
-    </tr>
-    <tr>
-      <td>Bach</td>
-      <td>Frank</td>
-      <td>fbach@yahoo.com</td>
-      <td>$50.00</td>
-      <td>http://www.frank.com</td>
-    </tr>
-    <tr>
-      <td>Doe</td>
-      <td>Jason</td>
-      <td>jdoe@hotmail.com</td>
-      <td>$100.00</td>
-      <td>http://www.jdoe.com</td>
-    </tr>
-    <tr>
-      <td>Conway</td>
-      <td>Lea</td>
-      <td>tconway@earthlink.net</td>
-      <td>$50.00</td>
-      <td>http://www.timconway.com</td>
-    </tr>
-   
-      <tr>
-      <td>Smith</td>
-      <td>Nina</td>
-      <td>jsmith@gmail.com</td>
-      <td>$50.00</td>
-      <td>http://www.jsmith.com</td>
-    </tr>
-    <tr>
-      <td>Bach</td>
-      <td>Fran</td>
-      <td>fbach@yahoo.com</td>
-      <td>$50.00</td>
-      <td>http://www.frank.com</td>
-    </tr>
-    <tr>
-      <td>Doe</td>
-      <td>Alice</td>
-      <td>jdoe@hotmail.com</td>
-      <td>$100.00</td>
-      <td>http://www.jdoe.com</td>
-    </tr>
-    <tr>
-      <td>Conway</td>
-      <td>Nancy</td>
-      <td>tconway@earthlink.net</td>
-      <td>$50.00</td>
-      <td>http://www.timconway.com</td>
-    </tr>
+								</div>
+							</div>
 
-  </tbody>
-</table>
 
-		<!--<div id="demo1" style="width:400px">
-				<table>
-					<thead>
-						<tr>
-							<tr>
-								<th>Work Date
-								</th>
-							 <th>Note
-								</th>
-								<th>Cmd
-								</th>
-							</tr>
-					</thead>
 
-					<tbody>
-						<tr repeat.for="note of currentItem.notes" with.bind="note">
-						<td width="125px">
-								<span show.bind="!note.edit">${WorkDate | dateFormat}</span>
-								<input show.bind="note.edit" class="form-control input-sm" disabled.bind="!note.edit" type="date" value.bind="WorkDate | dateFormat">
-							</td>
-							<td width="325px">
-								<span show.bind="!note.edit">${Notes}</span>
-								<input show.bind="note.edit" class="form-control input-sm" disabled.bind="!note.edit" type="text" value.bind="Notes">								</td>
+					
+
+
+							<div class="flex-row-none">
+								<div class="form-group flex-column-1">
+									<input id="searchbin" type="text" class="form-control" placeholder="Search for bin ..." value.bind="search.bin">
+								</div>
 							
-            
-            
-            	<td width="225px">
-								<button class="btn btn-primary" click.delegate="saveitem(note,$index)">${ !note.edit ? 'Edit' : 'Save' }</button>
-								<button class="btn btn-danger" click.delegate="remove(note,$index)">Delete</button>
-							</td>
-					</tbody>
-				</table>
-			
-		</div> -->
+
+	
+								<div class="form-group flex-column-1 margin-left-10">
+							
+									<input id="searchbin" type="text" class="form-control" placeholder="Search for Sold-To Last Name ..." value.bind="search.soldtoname">
+								</div>
+							
+							</div>
+							<div class="flex-row-none">
+								<div class="form-group flex-column-1">
+									<div class="form-group">
+										<label><input type="checkbox" checked.bind="search.andor">  Checked: search on every keyword, unchecked: search on any keyword"</label>
+									</div>
+								</div>
+							</div>
+              		<div class="flex-row-none">
+								<div class="form-group flex-column-1">
+
+								</div>
+							</div>
+							<div class="flex-row-none">
+								<div class="form-group flex-column-1">
+									<ak-multiselect k-value.two-way="multikeywords">
+										<select multiple="multiple" k-height.bind="400" data-placeholder="Select mulitple keywords...">
+					                       <option repeat.for="opt of appService.codesGenre" model.bind="opt.Description">
+					                        ${opt.Description} 
+					                      </option> 
+					                    </select>
+									</ak-multiselect>
+								</div>
+							</div>
+
+							<div class="flex-row-none">
+								<div class="form-group flex-column-1">
+									<input ref="myDatalist" type="text" list="myDatalist" placeholder="search on savedlist" change.delegate="performSearchSL()"
+									 input.delegate="selectedValue = findOption($event.target.value)" />
+									<datalist id="myDatalist">
+										<option repeat.for="option of appService.savedlists">${option.name}</option>
+									</datalist>
+								</div>
+							</div>
+
+							<div class="flex-row-none">
+								<div class="form-group flex-column-1">
+									<div class="form-group">Sold - Selected
+										<label repeat.for="sold of searchsold">
+					              <input type="radio" name="group1"
+					                    model.bind="sold.id" checked.bind="search.sold">
+					                 ${sold.name} &nbsp;
+					            </label>
+									</div>
+								</div>
+							</div>
 
 
-		<!-- <div id="demo1">
-			<table>
-				<thead>
+							<div class="flex-row-none">
+								<div class="form-group flex-column-1">
+									<div class="form-group">Search on Dates - Selected : ${search.selectedDateId}
+										<label repeat.for="dat of searchdates">
+					            <input type="radio" name="group2"
+					            model.bind="dat.name" checked.bind="search.selectedDateId">
+					            ${dat.name} &nbsp;
+					            </label>
+									</div>
+								</div>
+							</div>
 
-					<tr>
-						<th>AAA</th>
-						<th>BBB</th>
-						<th>CCC</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
+							<div class="flex-row-none">
 
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
+								<div class="form-group flex-column-1">
+									<label for="searchdrcvdatel"> Start Date gte </label>
+									<input id="searchdrcvdatel" type="date" class="form-control" placeholder="Start Date gt or eq)  ..." value.bind="search.startdate">
+								</div>
+								<div class="form-group flex-column-1 margin-left-10">
+									<label for="searchdrcvdate2"> Stop Date lte  </label>
+									<input id="searchdrcvdate2" type="date" class="form-control" placeholder="Stop Date (lt or eq)  .." value.bind="search.stopdate">
+								</div>
 
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
+							</div>
+						</div>
+						<div class="form-group flex-column-1 margin-left-10">
 
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
 
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
 
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
+							<div class="flex-row-none">
+								<div class="form-group flex-column-1">
+									<label for="adjuster">mru</label>
 
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
+									<ul>
+										<li repeat.for='e of mru'>
 
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
+											<a click.delegate="populateInv(e)"> ${e}</a>
 
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="flex-row-none">
+						<div class="form-group flex-column-1">
 
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
+							<button id="searchInputBtn" class="btn btn-primary" type="submit"><strong>S</strong>earch!</button>
+						</div>
 
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
+						<div class="form-group flex-column-1 margin-left-10">
+							<button id="searchInputBtn" class="btn btn-success" type="button" click.delegate="addinventory()"><strong>A</strong>dd Inventory</button>
+						</div>
+						<div class="form-group flex-column-1 margin-left-10">
+							<button id="searchInputBtn" class="btn btn-primary" type="button" click.delegate="performClear()">Clear</button>
+						</div>
+					</div>
 
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
+				</form>
+			</div>
 
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
-
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
-
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-
-					<tr>
-						<td>52</td>
-						<td>Smith</td>
-
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
-
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
-
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
-
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
-
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
-
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-	<tr>
-						<td>50</td>
-						<td>Smith</td>
-
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
-
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
-
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
-
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
-
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
-
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
-
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
-
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
-
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
-
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
-
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
-
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-
-					<tr>
-						<td>52</td>
-						<td>Smith</td>
-
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
-
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
-
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
-
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-					<tr>
-						<td>50</td>
-						<td>Smith</td>
-
-						<td>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </td>
-					</tr>
-					<tr>
-						<td>94</td>
-						<td>Jackson</td>
-
-						<td>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</td>
-					</tr>
-
-				</tbody>
-			</table>
-		</div> -->
+		</div>
 	</section>
 </template>
 
 
-<!-- <form> -->
+<!-- fix-aubs  -->
+									<!-- <aubs-typeahead ref='keyword' data.bind="appService.codesGenre" value.bind="keywordDescription" debounce.bind="350" placeholder="search on 1 keyword"
+									 open-on-focus.bind="true" key="Description" results-limit.bind="12" select-single-result.bind="true">
+									</aubs-typeahead> -->
+                     <!-- fix-aubs  -->
+									<!-- <aubs-typeahead ref='InventoryLocation' data.bind="appService.codesInventoryLocation" value.bind="DescriptionLoc" debounce.bind="350"
+									 placeholder="not avail -codesInventoryLocation" open-on-focus.bind="true" key="Description" results-limit.bind="12"
+									 select-single-result.bind="true">
+									</aubs-typeahead> -->
